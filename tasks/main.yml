@@ -49,7 +49,7 @@
 - include_tasks: common.yml
   with_items: >-
     {{
-    (VAR_gathering_definition | d({})).keys() | union(i_gathering_definition_role2.keys())
+    ((VAR_gathering_definition | d({})).keys() | list) | union((i_gathering_definition_role2.keys() | list))
     }}
   loop_control:
     loop_var: i_gathering_definition_type
