@@ -5,6 +5,17 @@
 # 制御ホストにdelegate_factsした変数をGlobal変数の代わりとする。
 # run_onceを指定すると問題があるため、全ホストから制御ホストにdelegate_toする。
 # (呼出側playでskipされたホストがrun_onceで選択されうるため)
+- name: check param VAR_gathering_command_save_file
+  fail:
+    msg: "The value of VAR_gathering_command_save_file must be one of these: item, rc, stdout, stderr."
+  with_items: "{{ VAR_gathering_command_save_file }}"
+  when:
+    - VAR_gathering_command_save_file is defined
+    - VAR_gathering_command_save_file is not none
+    - item != "item"
+    - item != "rc"
+    - item != "stdout"
+    - item != "stderr"
 
 - name: Update datetime
   setup:
@@ -21,6 +32,22 @@
   delegate_to: localhost
   become: no
   delegate_facts: yes
+
+- name: none set param save_command_items
+  set_fact:
+    save_command_items:
+      - "item"
+      - "rc"
+      - "stdout"
+      - "stderr"
+  when: (VAR_gathering_command_save_file is undefined) or (VAR_gathering_command_save_file is defined and VAR_gathering_command_save_file is none)
+
+- name: not none set param save_command_items
+  set_fact:
+    save_command_items: "{{ VAR_gathering_command_save_file }}"
+  when:
+    - VAR_gathering_command_save_file is defined
+    - VAR_gathering_command_save_file is not none
 
 # ロールパスが指定されていたらロール内の収集情報定義をロードする
 - name: Load gathering definition role
@@ -44,6 +71,15 @@
       hostvars['localhost'].ansible_date_time.iso8601_basic_short +
       VAR_gathering_label | ternary('_' + VAR_gathering_label, '')
       }}/{{ inventory_hostname }}
+  when: (VAR_gathering_dest_role_path is undefined) or (VAR_gathering_dest_role_path is defined and VAR_gathering_dest_role_path is none) or (VAR_gathering_dest_role_path is defined and VAR_gathering_dest_role_path == '')
+
+- name: Set gathered_data_dest
+  set_fact:
+    gathered_data_dest: "{{ VAR_gathering_dest_role_path }}"
+  when:
+    - VAR_gathering_dest_role_path is defined
+    - VAR_gathering_dest_role_path is not none
+    - VAR_gathering_dest_role_path != ''
 
 # 各情報の収集を実行
 - include_tasks: common.yml

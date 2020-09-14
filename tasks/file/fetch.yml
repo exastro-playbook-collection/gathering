@@ -14,4 +14,5 @@
     src: "{{ item }}"
     dest: "{{ i_gathered_data_dest }}"
   with_items: "{{ i_gathering_file_found.stdout_lines }}"
+  changed_when: False
   when: not ansible_check_mode

@@ -166,6 +166,19 @@ VAR_gathering_definition_role_pathパラメータとVAR_gathering_definitionパ�
 通常は、情報収集playbookのインポート時の引数として本パラメータを指定する
 (ロールの引数には指定しない)。
 
+### VAR_gathering_dest_role_path
+制御ホスト上の収集情報の出力先を指定する。
+当該パラメータが指定された場合、下記の出力パスではなく、直接に指定されたパスに出力するようになる。
+`{{ VAR_gathering_root }}/_gathered_data/{{ 日時 }}_{{ ラベル }}/{{ ターゲットホスト }}/{{ 情報種別 }}/`
+注意しなければならない点は、当該パラメータが指定されると、以下のケースで前回の出力内容が次の処理により、上書きされる可能性があることである。
+* 当該ロールを1回の呼出いで複数ホストを処理する
+* 当該ロールを複数回で呼び出す
+
+### VAR_gathering_command_save_file
+コマンド結果の出力内容を指定する。
+デフォルトは指定しなくて、全部（item,rc,stdout,stderr）を出力する。
+当該パラメータが指定された場合、「results.json」が出力されない。
+
 ### 戻り値
 
 #### gathered_data_dest
@@ -306,6 +319,8 @@ Windows, Linux
   - 終了コード (rc.txt)
   - 標準出力 (stdout.txt)
   - 標準エラー出力 (stderr.txt)
+
+※`VAR_gathering_dest_role_path`の設定による変わる可能性がある。
 
 #### 例
 Playbook

@@ -26,6 +26,7 @@
     rm -rf "{{ i_gathered_data_dest }}/{{ inventory_hostname }}"
   args:
     removes: "{{ i_gathered_data_dest }}/{{ inventory_hostname }}"
+  changed_when: False
   delegate_to: localhost
   become: no
   when: (i_gathering_file_list|length>0)

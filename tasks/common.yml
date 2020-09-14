@@ -11,6 +11,7 @@
   file:
     path: "{{ i_gathered_data_dest }}"
     state: directory
+  changed_when: False
   delegate_to: localhost
   become: no
 

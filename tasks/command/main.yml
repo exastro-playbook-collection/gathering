@@ -6,6 +6,8 @@
     content: >-
       {{ i_gathering_command_result.results | to_nice_json }}
     dest: "{{ i_gathered_data_dest }}/results.json"
+  changed_when: False
+  when: (VAR_gathering_command_save_file is undefined) or (VAR_gathering_command_save_file is defined and VAR_gathering_command_save_file is none)
   delegate_to: localhost
   become: no
 

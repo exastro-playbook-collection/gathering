@@ -4,6 +4,7 @@
       file:
         path: "{{ i_gathered_data_dest }}/{{ _index }}"
         state: directory
+      changed_when: False
 
     - name: Save command results
       copy:
@@ -11,10 +12,8 @@
           {{ _result[item] }}
         dest: "{{ i_gathered_data_dest }}/{{ _index }}/{{ item }}.txt"
       with_items:
-        - item
-        - rc
-        - stdout
-        - stderr
+        - "{{ save_command_items }}"
+      changed_when: False
       when: not ansible_check_mode
   vars:
     _index: "{{ _indexed_result.0 }}"
